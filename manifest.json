@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "LeetCode to GitHub Sync",
+  "version": "1.0.0",
+  "description": "Extract LeetCode submissions and sync to GitHub with AI-powered analysis",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "identity",
+    "scripting",
+    "https://leetcode.com/*",
+    "https://api.github.com/*",
+    "https://code-analyzer-six.vercel.app/*",
+    "https://gitsync-sept-gitoauth.vercel.app/*"
+  ],
+  "host_permissions": [
+    "https://leetcode.com/*",
+    "https://api.github.com/*",
+    "https://github.com/*",
+    "https://code-analyzer-six.vercel.app/*",
+    "https://gitsync-sept-gitoauth.vercel.app/*",
+    "https://*.vercel.app/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*/submissions/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "LeetCode GitHub Sync"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js"],
+      "matches": ["https://leetcode.com/*"]
+    }
+  ],
+  "oauth2": {
+    "client_id": "Ov23li2KzaXJqydhdmob.apps.googleusercontent.com",
+    "scopes": ["repo", "user"]
+  },
+  "externally_connectable": {
+    "matches": [
+      "https://gitsync-sept-gitoauth.vercel.app/*"
+    ]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
