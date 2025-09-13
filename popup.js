@@ -3,7 +3,7 @@ class PopupController {
     constructor() {
         this.initializeElements();
         this.setupEventListeners();
-        this.checkAuthStatus();
+        this.authenticated = this.checkAuthStatus();
     }
 
     initializeElements() {
@@ -16,9 +16,22 @@ class PopupController {
             authBtn: document.getElementById('auth-btn'),
             syncBtn: document.getElementById('sync-btn'),
             settingsBtn: document.getElementById('settings-btn'),
-            logoutBtn: document.getElementById('logout-btn')
+            logoutBtn: document.getElementById('logout-btn'),
+            githubLink: document.getElementById("github-link")
         };
     }
+    
+    setGithubLink(githubUsername, repoName) {
+        if (githubUsername && repoName) {
+            const repoUrl = `https://github.com/${githubUsername}/${repoName}`;
+            this.elements.githubLink.href = repoUrl;
+            this.elements.githubLink.classList.remove("hidden"); // show
+        } else {
+            this.elements.githubLink.classList.add("hidden"); // hide
+        }
+    }
+
+
 
     setupEventListeners() {
         this.elements.authBtn.addEventListener('click', () => this.handleAuth());
@@ -145,7 +158,7 @@ class PopupController {
         });
     }
 
-    showAuthenticated(user) {
+    async showAuthenticated(user) {
         // Show user info
         this.elements.userInfo.classList.remove('hidden');
         this.elements.userAvatar.src = user.avatar_url || '';
@@ -158,6 +171,10 @@ class PopupController {
         this.elements.settingsBtn.classList.remove('hidden');
         this.elements.logoutBtn.classList.remove('hidden');
         
+        // ✅ Dynamically set GitHub repo link
+        const settings = await this.getSettings();
+        this.setGithubLink(user.login, settings.repoName);
+
         this.clearStatus();
     }
 
@@ -170,7 +187,7 @@ class PopupController {
         this.elements.syncBtn.classList.add('hidden');
         this.elements.settingsBtn.classList.add('hidden');
         this.elements.logoutBtn.classList.add('hidden');
-        
+        this.setGithubLink(null, null);
         this.clearStatus();
     }
 
